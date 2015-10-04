@@ -22,7 +22,9 @@ module CatarsePagarme
     end
 
     def update_plan
-      return
+      @pagarme_plan= ::PagarMe::Plan.find_by_id(self.plan.gateway_id)
+      @pagarme_plan.name = plan.name
+      @pagarme_plan.save
     end
 
     def fill_acquirer_data
