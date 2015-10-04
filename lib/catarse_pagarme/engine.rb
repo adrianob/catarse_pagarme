@@ -4,6 +4,7 @@ module CatarsePagarme
 
     config.to_prepare do
       ::Payment.send(:include, CatarsePagarme::PaymentConcern)
+      ::Plan.send(:include, CatarsePagarme::PlanConcern)
     end
   end
 end
