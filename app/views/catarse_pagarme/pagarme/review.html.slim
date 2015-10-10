@@ -31,7 +31,7 @@
                 .fontsize-small.fontweight-semibold.u-marginbottom-20
                   = "XXXX.XXXX.XXXX.#{credit_card.last_digits}"
               .w-col.w-col-4
-                - if @contribution.value.to_f >= CatarsePagarme.configuration.minimum_value_for_installment.to_f
+                - if @contribution && @contribution.value.to_f >= CatarsePagarme.configuration.minimum_value_for_installment.to_f
                   = select_tag :payment_card_installments, options_for_select(installments_for_select(payment)), class: 'w-select text-field text-field-creditcard'
         = label_tag :payment_subscription_card_0 do
           .w-row.creditcard-records
@@ -72,7 +72,7 @@
             = phone_field_tag :payment_card_date, nil, class: 'w-input text-field', required: true
             .fontsize-smaller.text-error.u-marginbottom-20.fa.fa-exclamation-triangle.w-hidden[data-error-for="payment_card_date"]
               | Qual a data de expiração no cartão?
-        - if @contribution.value.to_f >= CatarsePagarme.configuration.minimum_value_for_installment.to_f
+        - if @contribution && @contribution.value.to_f >= CatarsePagarme.configuration.minimum_value_for_installment.to_f
           .w-row
             .w-col.w-col-6
               = label_tag :payment_card_installments, t('projects.contributions.edit.form_labels.payment_card_installments'), class: 'field-label fontweight-semibold'

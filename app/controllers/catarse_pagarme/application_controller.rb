@@ -45,6 +45,10 @@ module CatarsePagarme
       @contribution ||= PaymentEngines.find_contribution(params[:id])
     end
 
+    def subscription
+      @subscription ||= PaymentEngines.find_subscription(params[:id])
+    end
+
     def payment
       attributes = {contribution: contribution, value: contribution.value}
       @payment ||= PaymentEngines.new_payment(attributes)

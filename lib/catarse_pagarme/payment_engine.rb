@@ -8,6 +8,10 @@ module CatarsePagarme
       url_helpers.review_pagarme_path(contribution)
     end
 
+    def subscription_review_path subscription
+      url_helpers.subscription_review_pagarme_path(subscription)
+    end
+
     def locale
       'pt'
     end

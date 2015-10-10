@@ -24,18 +24,26 @@ App.views.Pagarme.addChild('PaymentSlip', _.extend({
       return false;
     }
 
-    var parent = this.parent;
+    var parent = this.parent,
+        post_url = '';
 
     e.preventDefault();
     $(e.currentTarget).hide();
     this.$('#payment-slip-instructions').slideUp('slow');
     that.parent.loader.show();
 
-    $.post('/payment/pagarme/'+that.parent.contributionId+'/pay_slip.json',null, 'json').success(function(response){
+    if (typeof parent.contributionId !== 'undefined') {
+      post_url = '/payment/pagarme/'+that.parent.contributionId+'/pay_slip.json';
+    }
+    else if (typeof parent.subscriptionId !== 'undefined') {
+      post_url = '/payment/pagarme/'+that.parent.subscriptionId+'/pay_subscription.json?payment_method=slip';
+    }
+
+    $.post(post_url, null, 'json').success(function(response){
       parent.loader.hide();
       if(response.payment_status == 'failed'){
         that.message.find('.message-text').html(response.message);
-        that.message.slideDown('slow')
+        that.message.slideDown('slow');
 
         $(e.currentTarget).show();
       } else if(response.boleto_url) {

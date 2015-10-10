@@ -6,7 +6,9 @@ App.addChild('Pagarme', {
     this.loader = this.$('.loader img');
 
     this.contributionId = $('input#contribution_id').val();
+    this.subscriptionId = $('input#subscription_id').val();
     this.projectId = $('input#project_id').val();
+    this.planId = $('input#subscription_plan_id').val();
   }
 });
 

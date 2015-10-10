@@ -13,7 +13,7 @@ App.views.Pagarme.addChild('PaymentCard', _.extend({
     var $target = $(event.currentTarget);
     $target.siblings().removeClass('selected');
     $target.addClass('selected');
-    if($(event.target).val() == 0){
+    if($(event.target).val() === 0){
       this.$('.type_card_data').slideDown('slow');
     }
     else{
@@ -44,6 +44,9 @@ App.views.Pagarme.addChild('PaymentCard', _.extend({
   },
 
   getInstallments: function() {
+    if (typeof this.parent.contributionId === 'undefined') {
+      return 1;
+    }
     if(this.hasSelectedSomeCard()) {
       return this.$('.my-credit-cards .selected select#payment_card_installments').val();
     } else {
@@ -99,7 +102,7 @@ App.views.Pagarme.addChild('PaymentCard', _.extend({
     this.parent.loader.hide();
 
     $.each(errors, function(i, value){
-      msg.push(value)
+      msg.push(value);
     });
 
     this.message.find('.message-text').html(msg.join("<br/>"));
@@ -120,10 +123,17 @@ App.views.Pagarme.addChild('PaymentCard', _.extend({
 
   requestPayment: function(data){
     var that = this;
+    var post_url = '';
+    if (typeof that.parent.contributionId !== 'undefined') {
+      post_url = '/payment/pagarme/'+that.parent.contributionId+'/pay_credit_card';
+    }
+    else if (typeof that.parent.subscriptionId !== 'undefined') {
+      post_url = '/payment/pagarme/'+that.parent.subscriptionId+'/pay_subscription.json?payment_method=credit_card';
+    }
 
     $.ajax({
       type: 'POST',
-      url: '/payment/pagarme/'+that.parent.contributionId+'/pay_credit_card',
+      url: post_url,
       data: data,
       success: function(response){
         that.parent.loader.hide();
@@ -149,7 +159,7 @@ App.views.Pagarme.addChild('PaymentCard', _.extend({
 
   onKeyupPaymentCardNumber: function(e){
     var number = $(e.currentTarget).val();
-    this.$('#payment_card_flag').html(this.getCardFlag(number))
+    this.$('#payment_card_flag').html(this.getCardFlag(number));
   },
 
   getCardFlag: function(number) {
