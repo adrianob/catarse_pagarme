@@ -45,7 +45,7 @@ App.views.Pagarme.addChild('PaymentCard', _.extend({
 
   getInstallments: function() {
     if (typeof this.parent.contributionId === 'undefined') {
-      return 0;
+      return 1;
     }
     if(this.hasSelectedSomeCard()) {
       return this.$('.my-credit-cards .selected select#payment_card_installments').val();
