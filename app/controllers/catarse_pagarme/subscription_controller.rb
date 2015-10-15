@@ -18,7 +18,6 @@ module CatarsePagarme
       }
       info_hash[:payment_method] = 'boleto' if payment_method == 'slip'
       info_hash[:card_hash] = params[:card_hash] if payment_method == 'credit_card'
-      raise info_hash.to_yaml
 
       pagarme_subscription = PagarMe::Subscription.new(info_hash)
 
