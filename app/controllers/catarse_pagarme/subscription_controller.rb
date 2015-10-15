@@ -18,6 +18,7 @@ module CatarsePagarme
       }
       info_hash[:payment_method] = 'boleto' if payment_method == 'slip'
       info_hash[:card_hash] = params[:card_hash] if payment_method == 'credit_card'
+      raise info_hash.to_yaml
 
       pagarme_subscription = PagarMe::Subscription.new(info_hash)
 
@@ -28,7 +29,8 @@ module CatarsePagarme
       subscription.update_attribute :state, pagarme_subscription.status
       subscription.update_attribute :gateway_data, pagarme_subscription.to_json
 
-      response = { boleto_url: pagarme_subscription.current_transaction.boleto_url, payment_status: pagarme_subscription.status }
+      response = { payment_status: pagarme_subscription.status }
+      response[:boleto_url] = pagarme_subscription.current_transaction.boleto_url if payment_method == 'slip'
       render json: response
     rescue PagarMe::PagarMeError => e
       render json: { payment_status: 'failed', message: e.message }
