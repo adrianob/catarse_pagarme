@@ -14,7 +14,7 @@ module CatarsePagarme
       self.max_installments = 12
       self.minimum_value_for_installment = 10
       self.credit_card_cents_fee = 0.39
-      self.host = 'catarse.me'
+      self.host = '99gamers.me'
       self.subdomain = 'www'
       self.protocol = 'http'
       self.pagarme_tax = 0.0063

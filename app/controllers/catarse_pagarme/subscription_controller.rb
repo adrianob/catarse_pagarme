@@ -26,6 +26,7 @@ module CatarsePagarme
       pagarme_subscription.create
 
       subscription.update_attribute :state, pagarme_subscription.status
+      subscription.update_attribute :gateway_id, pagarme_subscription.id
       subscription.update_attribute :gateway_data, pagarme_subscription.to_json
 
       response = { payment_status: pagarme_subscription.status }
