@@ -28,6 +28,7 @@ module CatarsePagarme
       subscription.update_attribute :state, pagarme_subscription.status
       subscription.update_attribute :gateway_id, pagarme_subscription.id
       subscription.update_attribute :gateway_data, pagarme_subscription.to_json
+      subscription.update_attribute(:paid_at, DateTime.current) if pagarme_subscription.status == 'paid'
 
       response = { payment_status: pagarme_subscription.status }
       response[:boleto_url] = pagarme_subscription.current_transaction.boleto_url if payment_method == 'slip'

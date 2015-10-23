@@ -21,6 +21,17 @@ module CatarsePagarme
       plan.save!
     end
 
+    def destroy_plan
+      self.plan.update_attribute :enabled, false
+      self.plan.subscriptions.each do |subscription|
+        if subscription.gateway_id
+          subscription.update_attribute :state, 'canceled'
+          pagarme_subscription = PagarMe::Subscription.find_by_id(subscription.gateway_id)
+          pagarme_subscription.cancel
+        end
+      end
+    end
+
     def update_plan
       @pagarme_plan= ::PagarMe::Plan.find_by_id(self.plan.gateway_id)
       @pagarme_plan.name = plan.name
