@@ -1,5 +1,6 @@
 module CatarsePagarme
   class SubscriptionController < CatarsePagarme::ApplicationController
+    include FeeCalculatorConcern
     MAX_SOFT_DESCRIPTOR_LENGTH = 13
 
     def create
@@ -30,7 +31,7 @@ module CatarsePagarme
       subscription.update_attribute :gateway_data, pagarme_subscription.to_json
       if pagarme_subscription.status == 'paid'
         subscription.update_attribute(:paid_at, DateTime.current)
-        subscription.subscription_notifications.create(extra_data: {id: pagarme_subscription.id, current_status: 'paid', object: 'subscription'})
+        subscription.subscription_notifications.create(extra_data: {id: pagarme_subscription.id, current_status: 'paid', object: 'subscription'}, gateway_fee: get_fee('subscription'))
       end
 
       response = { payment_status: pagarme_subscription.status }

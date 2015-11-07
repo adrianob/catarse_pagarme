@@ -1,5 +1,6 @@
 module CatarsePagarme
   class NotificationsController < CatarsePagarme::ApplicationController
+    include FeeCalculatorConcern
     skip_before_filter :authenticate_user!
 
     def create
@@ -13,9 +14,12 @@ module CatarsePagarme
           return render nothing: true, status: 200
         end
       elsif (params['object'] == 'subscription') && subscription
-        subscription.subscription_notifications.create(extra_data: params.to_json)
 
         if PagarMe::validate_fingerprint(subscription.try(:gateway_id), params[:fingerprint])
+          pagarme_subscription = PagarMe::Subscription.find_by_id(subscription.gateway_id)
+          subscription.update_attribute :gateway_data, pagarme_subscription.to_json if pagarme_subscription
+          notification = subscription.subscription_notifications.create(extra_data: params.to_json)
+          notification.update_attribute :gateway_fee, get_fee('subscription')
           subscription.pagarme_subscription_delegator.change_status_by_transaction(params[:current_status])
 
           return render nothing: true, status: 200
