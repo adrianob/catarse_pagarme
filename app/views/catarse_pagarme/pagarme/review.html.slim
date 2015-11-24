@@ -1,5 +1,13 @@
 = javascript_include_tag 'catarse_pagarme', 'https://pagar.me/assets/pagarme-v2.min.js'
 
+- if ( @subscription && @subscription.plan.amount.to_f < 10.0 ) || (@contribution && @contribution.value.to_f < 10.0)
+  - disable_slip = true
+  .w-row
+    .w-col.w-col-12
+      .field-label.fontweight-semibold
+        .fontsize-smaller.text-error.u-marginbottom-20.fa.fa-exclamation-triangle
+          | Pagamento por boleto só está disponível acima de R$10
+
 #catarse_pagarme_form
   .next_step_after_valid_document
     .w-row.list_payment.w-form
@@ -8,11 +16,12 @@
           = radio_button_tag 'payment_type', "credit_card", false, class: 'w-radio-input back-payment-radio-button'
           = label_tag :payment_type_credit_card, nil, class: "cards w-form-label" do
             = image_tag 'catarse_bootstrap/payment_cards_pagarme.png'
-      .w-col.w-col-5.w-col-small-5.back-payment-moip-options-column
-        .w-radio.w-clearfix
-          = radio_button_tag 'payment_type', "slip", false, class: 'w-radio-input back-payment-radio-button'
-          = label_tag :payment_type_slip, class: "boleto w-form-label" do
-            = image_tag 'catarse_bootstrap/payment_boleto.png'
+      - if !disable_slip
+        .w-col.w-col-5.w-col-small-5.back-payment-moip-options-column
+          .w-radio.w-clearfix
+            = radio_button_tag 'payment_type', "slip", false, class: 'w-radio-input back-payment-radio-button'
+            = label_tag :payment_type_slip, class: "boleto w-form-label" do
+              = image_tag 'catarse_bootstrap/payment_boleto.png'
 
   #payment_type_credit_card_section.payment_section
     = form_tag 'javascript:void(0);', :class => 'pagarme' do
