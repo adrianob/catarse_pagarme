@@ -18,7 +18,7 @@ module CatarsePagarme
       @pagarme_plan.create
 
       plan.gateway_id = @pagarme_plan.id
-      plan.save!
+      plan.save
     end
 
     def destroy_plan
