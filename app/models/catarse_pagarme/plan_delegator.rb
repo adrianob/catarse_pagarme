@@ -25,9 +25,13 @@ module CatarsePagarme
       self.plan.update_attribute :enabled, false
       self.plan.subscriptions.each do |subscription|
         if subscription.gateway_id
-          subscription.update_attribute :state, 'canceled'
-          pagarme_subscription = PagarMe::Subscription.find_by_id(subscription.gateway_id)
-          pagarme_subscription.cancel
+          begin
+            subscription.update_attribute :state, 'canceled'
+            pagarme_subscription = PagarMe::Subscription.find_by_id(subscription.gateway_id)
+            pagarme_subscription.cancel
+          rescue PagarMe::PagarMeError => e
+            Rails.logger.error "#{e} while canceling sub #{subscription.id}"
+          end
         end
       end
     end
