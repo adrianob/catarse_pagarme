@@ -13,7 +13,7 @@ App.views.Pagarme.addChild('PaymentCard', _.extend({
     var $target = $(event.currentTarget);
     $target.siblings().removeClass('selected');
     $target.addClass('selected');
-    if($(event.target).val() === 0){
+    if($(event.target).val() == 0){
       this.$('.type_card_data').slideDown('slow');
     }
     else{
