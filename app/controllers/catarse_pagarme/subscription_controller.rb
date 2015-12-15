@@ -18,7 +18,13 @@ module CatarsePagarme
         }
       }
       info_hash[:payment_method] = 'boleto' if payment_method == 'slip'
-      info_hash[:card_hash] = params[:card_hash] if payment_method == 'credit_card'
+      if payment_method == 'credit_card'
+        if params[:card_hash].present?
+          info_hash[:card_hash] = params[:card_hash]
+        else
+          info_hash[:card_id] = params[:card_id]
+        end
+      end
 
       pagarme_subscription = PagarMe::Subscription.new(info_hash)
 
@@ -32,6 +38,16 @@ module CatarsePagarme
       if pagarme_subscription.status == 'paid'
         subscription.update_attribute(:paid_at, DateTime.current)
         subscription.subscription_notifications.create(extra_data: {id: pagarme_subscription.id, current_status: 'paid', object: 'subscription'}, gateway_fee: get_fee('subscription'))
+      end
+
+      if params[:save_card] === "true"
+        card = pagarme_subscription.card
+
+        credit_card = self.current_user.credit_cards.find_or_initialize_by(card_key: card.id)
+        credit_card.last_digits = card.last_digits
+        credit_card.card_brand = card.brand
+
+        credit_card.save!
       end
 
       response = { payment_status: pagarme_subscription.status }
