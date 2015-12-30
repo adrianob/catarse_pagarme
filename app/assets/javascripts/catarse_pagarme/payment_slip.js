@@ -36,7 +36,7 @@ App.views.Pagarme.addChild('PaymentSlip', _.extend({
       post_url = '/payment/pagarme/'+that.parent.contributionId+'/pay_slip.json';
     }
     else if (typeof parent.subscriptionId !== 'undefined') {
-      post_url = '/payment/pagarme/'+that.parent.subscriptionId+'/pay_subscription.json?payment_method=slip';
+      post_url = '/payment/pagarme/'+that.parent.subscriptionId+'/pay_subscription.json?payment_method=slip&twitch_link='+$('#subscription_twitch_link').val();
     }
 
     $.post(post_url, null, 'json').success(function(response){

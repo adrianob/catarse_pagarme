@@ -128,7 +128,7 @@ App.views.Pagarme.addChild('PaymentCard', _.extend({
       post_url = '/payment/pagarme/'+that.parent.contributionId+'/pay_credit_card';
     }
     else if (typeof that.parent.subscriptionId !== 'undefined') {
-      post_url = '/payment/pagarme/'+that.parent.subscriptionId+'/pay_subscription.json?payment_method=credit_card';
+      post_url = '/payment/pagarme/'+that.parent.subscriptionId+'/pay_subscription.json?payment_method=credit_card&twitch_link='+$('#subscription_twitch_link').val();
     }
 
     $.ajax({

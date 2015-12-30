@@ -35,6 +35,7 @@ module CatarsePagarme
       subscription.update_attribute :state, pagarme_subscription.status
       subscription.update_attribute :gateway_id, pagarme_subscription.id
       subscription.update_attribute :gateway_data, pagarme_subscription.to_json
+      subscription.user.update_attribute :twitch_link, params[:twitch_link]
       if pagarme_subscription.status == 'paid'
         subscription.update_attribute(:paid_at, DateTime.current)
         subscription.subscription_notifications.create(extra_data: {id: pagarme_subscription.id, current_status: 'paid', object: 'subscription'}, gateway_fee: get_fee('subscription'))
